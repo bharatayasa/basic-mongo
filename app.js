@@ -35,7 +35,10 @@ app.get('/books', (req, res) => {
         .sort({author: 1})
         .toArray()
         .then((result) => {
-            res.status(200).json(result);
+            res.status(200).json({
+                message:'success',
+                result
+            });
         })
         .catch((err) => {
             res.status(500).json({
@@ -50,7 +53,10 @@ app.get('/books/:id', (req, res) => {
         .findOne({ _id: new ObjectId(req.params.id) })
         .then((result) => {
             if (result) {
-                res.status(200).json(result);
+                res.status(200).json({
+                    message:'success',
+                    result
+                });
             } else {
                 res.status(404).json({
                     message: "Data not found"
@@ -60,6 +66,75 @@ app.get('/books/:id', (req, res) => {
         .catch((err) => {
             res.status(500).json({
                 message: "Failed to get one data",
+                err
+            });
+        });
+});
+
+app.post('/books', (req, res) => {
+    const books = req.body
+
+    db.collection('books')
+        .insertOne(books)
+        .then((result) => {
+            res.status(201).json({
+                status: "success",
+                message: 'data created',
+                result
+            })
+        }).catch((err) => {
+            res.status(500).json({
+                message: "Failed add data",
+                err
+            })
+        });
+});
+
+app.delete('/books/:id', (req, res) => {
+    db.collection('books')
+        .deleteOne({ _id: new ObjectId(req.params.id) })
+        .then((result) => {
+            if (result) {
+                res.status(200).json({
+                    status: "success",
+                    message:"data deleted",
+                    result
+                });
+            } else {
+                res.status(404).json({
+                    message: "Data not found"
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).json({
+                message: "Failed to delete one data",
+                err
+            });
+        });
+});
+
+app.put('/books/:id', (req, res) => {
+    const updates = req.body
+
+    db.collection('books')
+        .updateOne({ _id: new ObjectId(req.params.id) }, {$set: updates})
+        .then((result) => {
+            if (result) {
+                res.status(200).json({
+                    status: "success",
+                    message:"data updated",
+                    result
+                });
+            } else {
+                res.status(404).json({
+                    message: "Data not found"
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).json({
+                message: "Failed to update one data",
                 err
             });
         });
