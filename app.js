@@ -14,7 +14,7 @@ connectToDb((err) => {
 })
 
 const corsOption = {
-    origin: '*',
+    origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,
@@ -114,7 +114,7 @@ app.delete('/books/:id', (req, res) => {
         });
 });
 
-app.put('/books/:id', (req, res) => {
+app.patch('/books/:id', (req, res) => {
     const updates = req.body
 
     db.collection('books')
@@ -140,7 +140,7 @@ app.put('/books/:id', (req, res) => {
         });
 });
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 5000
 const host = 'localhost'
 
 app.listen(port, host, () => {
